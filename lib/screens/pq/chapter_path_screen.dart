@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../models/pq_models.dart';
+import '../../widgets/home_action.dart';
 import '../../widgets/path_node.dart';
 import '../../widgets/quest_switcher_action.dart';
 import 'chapter_screen.dart';
@@ -43,7 +44,7 @@ class _ChapterPathScreenState extends State<ChapterPathScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.subject.icon} ${widget.subject.name}'),
-        actions: const [QuestSwitcherAction(current: 1)],
+        actions: const [HomeAction(), QuestSwitcherAction(current: 1)],
       ),
       body: Column(
         children: [

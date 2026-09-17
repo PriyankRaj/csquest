@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../models/pq_models.dart';
 import '../../theme.dart';
+import '../../widgets/home_action.dart';
 import '../../widgets/puzzle/circuit_puzzle.dart';
 import '../../widgets/puzzle/match_puzzle.dart';
 import '../../widgets/puzzle/mcq_puzzle.dart';
@@ -36,7 +37,7 @@ class _ChapterScreenState extends State<ChapterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(c.title),
-        actions: const [QuestSwitcherAction(current: 1)],
+        actions: const [HomeAction(), QuestSwitcherAction(current: 1)],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemSound, SystemSoundType;
+import '../../data/cq_all_lessons.dart';
 import '../../data/cq_blocks.dart';
 import '../../main.dart';
 import '../../models/cq_models.dart';
 import '../../theme.dart';
+import '../../widgets/home_action.dart';
 import '../../widgets/quest_switcher_action.dart';
 
 /// The mobile-native replacement for the web version's free-drag canvas: a
@@ -148,6 +150,37 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     _runToken++;
   }
 
+  // ---------- Reset ----------
+  Future<void> _confirmReset() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: QuestColors.cqPanel,
+        title: const Text('Reset this lesson?'),
+        content: const Text(
+          'Your blocks will be cleared and the script restored to its starting point.',
+          style: TextStyle(color: Colors.black87),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: const Text('Reset')),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    _runToken++; // stop any in-flight run loop
+    setState(() {
+      _running = false;
+      _script = widget.lesson.starter();
+      _x = 0;
+      _y = 0;
+      _dir = 90;
+      _visible = true;
+      _scoreVar = 0;
+      _sayText = null;
+    });
+  }
+
   Future<void> _runList(List<BlockInstance> list, int token) async {
     for (final b in list) {
       if (token != _runToken) return;
@@ -251,22 +284,62 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
   }
 
   // ---------- Check ----------
+  // Lessons within a topic keep their authored order in cqAllLessons (each
+  // topic's own list is concatenated as-is — see that file's header), so
+  // "next lesson" is just the following same-topic entry, if any.
+  Lesson? get _nextLesson {
+    final topicLessons = cqAllLessons.where((l) => l.topicId == widget.lesson.topicId).toList();
+    final i = topicLessons.indexWhere((l) => l.id == widget.lesson.id);
+    if (i == -1 || i + 1 >= topicLessons.length) return null;
+    return topicLessons[i + 1];
+  }
+
   Future<void> _check() async {
     final result = widget.lesson.check(_script);
-    if (result.ok) await progressStore.markDone('cq:${widget.lesson.id}');
+    if (!result.ok) {
+      if (!mounted) return;
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: QuestColors.cqPanel,
+          title: const Text('🤔 Not quite'),
+          content: Text(result.message, style: const TextStyle(color: Colors.black87)),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK')),
+          ],
+        ),
+      );
+      return;
+    }
+
+    await progressStore.markDone('cq:${widget.lesson.id}');
     if (!mounted) return;
+    final next = _nextLesson;
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: QuestColors.cqPanel,
-        title: Text(result.ok ? '🎉 Nailed it!' : '🤔 Not quite'),
+        title: const Text('🎉 Nailed it!'),
         content: Text(result.message, style: const TextStyle(color: Colors.black87)),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK')),
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Stay here')),
+          FilledButton(
+            // Uses the screen's own context (not dialogContext, which is
+            // gone once the dialog pops) to navigate the underlying route.
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              if (next != null) {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => LessonEditorScreen(lesson: next)));
+              } else {
+                Navigator.of(context).pop(); // last lesson in the topic — back to the path
+              }
+            },
+            child: Text(next != null ? 'Next lesson ➜' : 'Back to path'),
+          ),
         ],
       ),
     );
-    if (result.ok) setState(() {});
+    if (mounted) setState(() {});
   }
 
   // ---------- UI ----------
@@ -283,14 +356,29 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
           backgroundColor: QuestColors.cqMotion,
           foregroundColor: Colors.white,
           title: Text('${l.glyph} ${l.title}'),
-          actions: const [QuestSwitcherAction(current: 2)],
-        ),
-        body: Column(
-          children: [
-            _buildStage(),
-            _buildCtaRow(),
-            Expanded(child: _buildScriptArea()),
+          actions: [
+            IconButton(
+              tooltip: 'Reset lesson',
+              icon: const Icon(Icons.replay),
+              onPressed: _confirmReset,
+            ),
+            const HomeAction(),
+            const QuestSwitcherAction(current: 2),
           ],
+        ),
+        // Tapping anywhere outside an input field dismisses the keyboard —
+        // without this, a number field's keyboard stays up after typing
+        // since nothing else in this screen ever claims focus to replace it.
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            children: [
+              _buildStage(),
+              _buildCtaRow(),
+              Expanded(child: _buildScriptArea()),
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => _openPalette(into: _script),
@@ -429,7 +517,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          _scriptList(_script, _script),
+          _scriptList(_script),
           const SizedBox(height: 80),
         ],
       ),
@@ -499,23 +587,33 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
           border: OutlineInputBorder(),
         ),
         keyboardType: isText ? TextInputType.text : TextInputType.number,
+        textInputAction: TextInputAction.done,
         onChanged: (v) => b.inputs[param.name] = isText ? v : (num.tryParse(v) ?? 0),
+        onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
       ),
     );
   }
 
-  Widget _scriptList(List<BlockInstance> list, List<BlockInstance> owner) {
+  // A block list — the top-level script, and each container block's body —
+  // is its own independent ReorderableListView, long-press-draggable on
+  // mobile. Container items build their own header-only drag trigger (via
+  // buildDefaultDragHandles: false) instead of wrapping their whole card:
+  // wrapping the whole card would make its long-press recognizer overlap
+  // the nested list's per-block recognizers, so long-pressing a block
+  // *inside* a loop would race against dragging the loop itself.
+  Widget _scriptList(List<BlockInstance> list, {String emptyLabel = 'Tap "+ Block" to start your script'}) {
     if (list.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(border: Border.all(color: const Color(0xFFD8DCEA), style: BorderStyle.solid), borderRadius: BorderRadius.circular(10)),
         alignment: Alignment.center,
-        child: const Text('Tap "+ Block" to start your script', style: TextStyle(color: Colors.black38, fontSize: 12)),
+        child: Text(emptyLabel, style: const TextStyle(color: Colors.black38, fontSize: 12)),
       );
     }
     return ReorderableListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      buildDefaultDragHandles: false,
       onReorder: (oldIndex, newIndex) {
         setState(() {
           if (newIndex > oldIndex) newIndex -= 1;
@@ -524,58 +622,60 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
         });
       },
       children: [
-        for (final b in list)
+        for (final (i, b) in list.indexed)
           KeyedSubtree(
             key: ValueKey(b),
             child: cqBlockDefs[b.defId]!.isContainer
-                ? Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: QuestColors.cqControl, borderRadius: BorderRadius.circular(8)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(child: _blockLabelRow(b)),
-                            GestureDetector(onTap: () => _removeBlock(list, b), child: const Icon(Icons.close, color: Colors.white70, size: 18)),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.drag_handle, color: Colors.white70, size: 18),
-                          ],
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 6, left: 10),
-                          padding: const EdgeInsets.only(left: 8),
-                          decoration: const BoxDecoration(border: Border(left: BorderSide(color: Colors.white54, width: 2))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              for (final inner in b.body)
-                                Container(
-                                  margin: const EdgeInsets.only(bottom: 6, top: 6),
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                  decoration: BoxDecoration(color: cqBlockDefs[inner.defId]!.color, borderRadius: BorderRadius.circular(8)),
-                                  child: Row(
-                                    children: [
-                                      Expanded(child: _blockLabelRow(inner)),
-                                      GestureDetector(onTap: () => _removeBlock(b.body, inner), child: const Icon(Icons.close, color: Colors.white70, size: 18)),
-                                    ],
-                                  ),
-                                ),
-                              TextButton.icon(
-                                onPressed: () => _openPalette(into: b.body, allowContainer: false),
-                                icon: const Icon(Icons.add, size: 16, color: Colors.white),
-                                label: const Text('Add inside', style: TextStyle(color: Colors.white, fontSize: 12)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : _blockChrome(b, onDelete: () => _removeBlock(list, b), child: _blockLabelRow(b)),
+                ? _containerBlock(list, b, i)
+                : ReorderableDelayedDragStartListener(
+                    index: i,
+                    child: _blockChrome(b, onDelete: () => _removeBlock(list, b), child: _blockLabelRow(b)),
+                  ),
           ),
       ],
+    );
+  }
+
+  Widget _containerBlock(List<BlockInstance> owner, BlockInstance b, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(color: QuestColors.cqControl, borderRadius: BorderRadius.circular(8)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Only the header triggers this block's own long-press drag —
+          // long-pressing anywhere in the body below drags an inner block
+          // instead, within its own nested ReorderableListView.
+          ReorderableDelayedDragStartListener(
+            index: index,
+            child: Row(
+              children: [
+                Expanded(child: _blockLabelRow(b)),
+                GestureDetector(onTap: () => _removeBlock(owner, b), child: const Icon(Icons.close, color: Colors.white70, size: 18)),
+                const SizedBox(width: 4),
+                const Icon(Icons.drag_handle, color: Colors.white70, size: 18),
+              ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 6, left: 10),
+            padding: const EdgeInsets.only(left: 8),
+            decoration: const BoxDecoration(border: Border(left: BorderSide(color: Colors.white54, width: 2))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _scriptList(b.body, emptyLabel: 'Empty — add a block below'),
+                TextButton.icon(
+                  onPressed: () => _openPalette(into: b.body, allowContainer: false),
+                  icon: const Icon(Icons.add, size: 16, color: Colors.white),
+                  label: const Text('Add inside', style: TextStyle(color: Colors.white, fontSize: 12)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

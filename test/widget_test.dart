@@ -9,7 +9,10 @@ void main() {
     await tester.pumpWidget(const QuestApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('🐢 Quest Hub'), findsOneWidget);
+    // At least one 🐢 (title) — the top-bar quest switcher icon is also a
+    // turtle (see QuestSwitcherAction), so this can't assert exactly one.
+    expect(find.text('🐢'), findsWidgets);
+    expect(find.text('Quest Hub'), findsOneWidget);
     expect(find.text('Process Quest'), findsOneWidget);
     expect(find.text('Code Quest'), findsOneWidget);
   });

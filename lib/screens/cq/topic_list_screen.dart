@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/cq_topics_meta.dart';
 import '../../theme.dart';
+import '../../widgets/home_action.dart';
 import '../../widgets/quest_switcher_action.dart';
 import 'lesson_list_screen.dart';
 
@@ -12,7 +13,7 @@ class TopicListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('🧩 Code Quest'),
-        actions: const [QuestSwitcherAction(current: 2)],
+        actions: const [HomeAction(), QuestSwitcherAction(current: 2)],
       ),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),

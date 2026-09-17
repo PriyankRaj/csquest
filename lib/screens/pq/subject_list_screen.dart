@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/pq_subjects_meta.dart';
 import '../../theme.dart';
+import '../../widgets/home_action.dart';
 import '../../widgets/quest_switcher_action.dart';
 import 'chapter_path_screen.dart';
 
@@ -16,7 +17,7 @@ class SubjectListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('🗺️ Process Quest'),
-        actions: const [QuestSwitcherAction(current: 1)],
+        actions: const [HomeAction(), QuestSwitcherAction(current: 1)],
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),

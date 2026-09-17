@@ -3,6 +3,7 @@ import '../../data/cq_all_lessons.dart';
 import '../../main.dart';
 import '../../models/cq_models.dart';
 import '../../theme.dart';
+import '../../widgets/home_action.dart';
 import '../../widgets/path_node.dart';
 import '../../widgets/quest_switcher_action.dart';
 import 'lesson_editor_screen.dart';
@@ -39,7 +40,7 @@ class _LessonListScreenState extends State<LessonListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.topic.icon} ${widget.topic.name}'),
-        actions: const [QuestSwitcherAction(current: 2)],
+        actions: const [HomeAction(), QuestSwitcherAction(current: 2)],
       ),
       body: Column(
         children: [

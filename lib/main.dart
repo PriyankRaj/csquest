@@ -8,6 +8,7 @@ late ProgressStore progressStore;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   progressStore = await ProgressStore.load();
+  ThemeController.mode.value = ThemeController.parse(progressStore.themeModeName);
   runApp(const QuestApp());
 }
 
@@ -16,11 +17,16 @@ class QuestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Computer Science Quest',
-      debugShowCheckedModeBanner: false,
-      theme: buildQuestTheme(),
-      home: const RootShell(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeController.mode,
+      builder: (context, mode, _) => MaterialApp(
+        title: 'Computer Science Quest',
+        debugShowCheckedModeBanner: false,
+        themeMode: mode,
+        theme: buildQuestTheme(Brightness.light),
+        darkTheme: buildQuestTheme(Brightness.dark),
+        home: const RootShell(),
+      ),
     );
   }
 }

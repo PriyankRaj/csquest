@@ -25,14 +25,14 @@ class PathNode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color ring = switch (state) {
-      NodeState.locked => QuestColors.textDim.withValues(alpha: 0.35),
-      NodeState.current => QuestColors.accent,
-      NodeState.done => QuestColors.accent2,
+      NodeState.locked => QuestColors.of(context).textDim.withValues(alpha: 0.35),
+      NodeState.current => QuestColors.of(context).accent,
+      NodeState.done => QuestColors.of(context).accent2,
     };
     final Color fill = switch (state) {
-      NodeState.locked => QuestColors.panel2,
-      NodeState.current => QuestColors.accent.withValues(alpha: 0.18),
-      NodeState.done => QuestColors.accent2.withValues(alpha: 0.18),
+      NodeState.locked => QuestColors.of(context).panel2,
+      NodeState.current => QuestColors.of(context).accent.withValues(alpha: 0.18),
+      NodeState.done => QuestColors.of(context).accent2.withValues(alpha: 0.18),
     };
     // The whole node — circle AND label — is one tap target, not just the
     // circle: a bigger hit area is both better mobile UX and what a user
@@ -74,7 +74,7 @@ class PathNode extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: state == NodeState.locked ? QuestColors.textDim : Colors.white,
+                  color: state == NodeState.locked ? QuestColors.of(context).textDim : QuestColors.of(context).textPrimary,
                 ),
               ),
             ),

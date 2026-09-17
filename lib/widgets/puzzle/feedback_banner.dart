@@ -11,7 +11,7 @@ class FeedbackBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = ok ? QuestColors.accent : QuestColors.danger;
+    final color = ok ? QuestColors.of(context).accent : QuestColors.of(context).danger;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

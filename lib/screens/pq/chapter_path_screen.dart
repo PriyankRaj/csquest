@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../models/pq_models.dart';
+import '../../theme.dart';
 import '../../widgets/home_action.dart';
 import '../../widgets/path_node.dart';
 import '../../widgets/quest_switcher_action.dart';
@@ -53,7 +54,7 @@ class _ChapterPathScreenState extends State<ChapterPathScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.subject.tagline, style: const TextStyle(color: Colors.white70)),
+                Text(widget.subject.tagline, style: TextStyle(color: QuestColors.of(context).textDim)),
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(6),
@@ -63,7 +64,7 @@ class _ChapterPathScreenState extends State<ChapterPathScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text('$done/${chapters.length} chapters', style: const TextStyle(fontSize: 12, color: Colors.white54)),
+                Text('$done/${chapters.length} chapters', style: TextStyle(fontSize: 12, color: QuestColors.of(context).textDim)),
               ],
             ),
           ),

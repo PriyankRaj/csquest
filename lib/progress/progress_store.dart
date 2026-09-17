@@ -9,6 +9,7 @@ class ProgressStore {
   final SharedPreferences _prefs;
   static const _key = 'quest_completed_v1';
   static const _characterKey = 'quest_character_v1';
+  static const _themeModeKey = 'quest_theme_mode_v1';
 
   // The Code Quest stage sprite — the thing lessons actually move/animate —
   // is a separate, cosmetic choice from "Process the turtle", the fixed
@@ -37,5 +38,14 @@ class ProgressStore {
 
   Future<void> setCharacter(String emoji) async {
     await _prefs.setString(_characterKey, emoji);
+  }
+
+  // Stored as a plain name ('light'/'dark'/'system') rather than a
+  // flutter/material ThemeMode, so this storage layer stays Flutter-UI
+  // agnostic — ThemeController (theme.dart) owns the mapping.
+  String? get themeModeName => _prefs.getString(_themeModeKey);
+
+  Future<void> setThemeModeName(String name) async {
+    await _prefs.setString(_themeModeKey, name);
   }
 }

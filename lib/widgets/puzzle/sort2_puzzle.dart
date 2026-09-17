@@ -58,11 +58,11 @@ class _Sort2PuzzleWidgetState extends State<Sort2PuzzleWidget> {
       margin: const EdgeInsets.all(4),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: dragging ? QuestColors.accent.withValues(alpha: 0.25) : QuestColors.panel2,
+        color: dragging ? QuestColors.of(context).accent.withValues(alpha: 0.25) : QuestColors.of(context).panel2,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: QuestColors.textDim.withValues(alpha: 0.4)),
+        border: Border.all(color: QuestColors.of(context).textDim.withValues(alpha: 0.4)),
       ),
-      child: Text(item.label, style: const TextStyle(color: Colors.white, fontSize: 13)),
+      child: Text(item.label, style: TextStyle(color: QuestColors.of(context).textPrimary, fontSize: 13)),
     );
   }
 
@@ -81,14 +81,14 @@ class _Sort2PuzzleWidgetState extends State<Sort2PuzzleWidget> {
               constraints: const BoxConstraints(minHeight: 110),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: hovering ? QuestColors.accent.withValues(alpha: 0.1) : QuestColors.panel,
+                color: hovering ? QuestColors.of(context).accent.withValues(alpha: 0.1) : QuestColors.of(context).panel,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: highlight ? QuestColors.accent : QuestColors.textDim.withValues(alpha: 0.3), width: highlight ? 2 : 1),
+                border: Border.all(color: highlight ? QuestColors.of(context).accent : QuestColors.of(context).textDim.withValues(alpha: 0.3), width: highlight ? 2 : 1),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: QuestColors.accent)),
+                  Text(label, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: QuestColors.of(context).accent)),
                   const SizedBox(height: 6),
                   Wrap(children: items.map((it) => GestureDetector(onTap: () {}, child: _chipVisual(it))).toList()),
                 ],
@@ -106,7 +106,7 @@ class _Sort2PuzzleWidgetState extends State<Sort2PuzzleWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(p.instructions, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+        Text(p.instructions, style: TextStyle(fontSize: 14, color: QuestColors.of(context).textDim)),
         const SizedBox(height: 12),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +118,7 @@ class _Sort2PuzzleWidgetState extends State<Sort2PuzzleWidget> {
         ),
         const SizedBox(height: 12),
         if (_tray.isNotEmpty) ...[
-          const Text('Drag each card into a bucket, or tap a bucket then tap a card:', style: TextStyle(fontSize: 12, color: Colors.white54)),
+          Text('Drag each card into a bucket, or tap a bucket then tap a card:', style: TextStyle(fontSize: 12, color: QuestColors.of(context).textDim)),
           const SizedBox(height: 6),
           Wrap(children: _tray.map(_chip).toList()),
           const SizedBox(height: 12),

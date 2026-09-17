@@ -40,11 +40,11 @@ class _McqPuzzleWidgetState extends State<McqPuzzleWidget> {
               style: OutlinedButton.styleFrom(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                backgroundColor: selected ? QuestColors.accent.withValues(alpha: 0.12) : null,
-                side: BorderSide(color: selected ? QuestColors.accent : QuestColors.textDim.withValues(alpha: 0.4)),
+                backgroundColor: selected ? QuestColors.of(context).accent.withValues(alpha: 0.12) : null,
+                side: BorderSide(color: selected ? QuestColors.of(context).accent : QuestColors.of(context).textDim.withValues(alpha: 0.4)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: Text(p.options[i], style: const TextStyle(color: Colors.white)),
+              child: Text(p.options[i], style: TextStyle(color: QuestColors.of(context).textPrimary)),
             ),
           );
         }),

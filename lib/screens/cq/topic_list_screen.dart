@@ -46,14 +46,14 @@ class TopicListScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(t.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5), maxLines: 2, overflow: TextOverflow.ellipsis),
                       const SizedBox(height: 4),
-                      Text(t.place, style: const TextStyle(fontSize: 11, color: QuestColors.textDim), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(t.place, style: TextStyle(fontSize: 11, color: QuestColors.of(context).textDim), maxLines: 1, overflow: TextOverflow.ellipsis),
                       if (!t.available)
                         Padding(
                           padding: const EdgeInsets.only(top: 6),
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                            decoration: BoxDecoration(color: QuestColors.panel2, borderRadius: BorderRadius.circular(8)),
-                            child: const Text('Coming soon', style: TextStyle(fontSize: 9.5, color: QuestColors.textDim)),
+                            decoration: BoxDecoration(color: QuestColors.of(context).panel2, borderRadius: BorderRadius.circular(8)),
+                            child: Text('Coming soon', style: TextStyle(fontSize: 9.5, color: QuestColors.of(context).textDim)),
                           ),
                         ),
                     ],

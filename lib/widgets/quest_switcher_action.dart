@@ -11,11 +11,14 @@ class QuestSwitcherAction extends StatelessWidget {
   final int current; // 0 = Home, 1 = Process Quest, 2 = Code Quest
   const QuestSwitcherAction({super.key, required this.current});
 
-  static const _options = [
-    (icon: '🐢', label: 'Home', color: QuestColors.textDim),
-    (icon: '🗺️', label: 'Process Quest', color: QuestColors.accent),
-    (icon: '🧩', label: 'Code Quest', color: QuestColors.accent2),
-  ];
+  List<({String icon, String label, Color color})> _options(BuildContext context) {
+    final qc = QuestColors.of(context);
+    return [
+      (icon: '🐢', label: 'Home', color: qc.textDim),
+      (icon: '🗺️', label: 'Process Quest', color: qc.accent),
+      (icon: '🧩', label: 'Code Quest', color: qc.accent2),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,36 +28,40 @@ class QuestSwitcherAction extends StatelessWidget {
       // rather than one that changes per screen (which reads as decoration,
       // not navigation, until you've learned what each icon means).
       icon: const Text('🐢', style: TextStyle(fontSize: 20)),
-      onPressed: () => showModalBottomSheet(
-        context: context,
-        backgroundColor: QuestColors.panel,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-        builder: (context) => SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Switch to', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white)),
+      onPressed: () {
+        final options = _options(context);
+        final textPrimary = QuestColors.of(context).textPrimary;
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: QuestColors.of(context).panel,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          builder: (context) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Switch to', style: TextStyle(fontWeight: FontWeight.w800, color: textPrimary)),
+                  ),
                 ),
-              ),
-              for (var i = 0; i < _options.length; i++)
-                ListTile(
-                  leading: Text(_options[i].icon, style: const TextStyle(fontSize: 22)),
-                  title: Text(_options[i].label, style: TextStyle(color: i == current ? _options[i].color : Colors.white, fontWeight: FontWeight.w700)),
-                  trailing: i == current ? Icon(Icons.check, color: _options[i].color) : null,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    QuestNav.go(i);
-                  },
-                ),
-              const SizedBox(height: 8),
-            ],
+                for (var i = 0; i < options.length; i++)
+                  ListTile(
+                    leading: Text(options[i].icon, style: const TextStyle(fontSize: 22)),
+                    title: Text(options[i].label, style: TextStyle(color: i == current ? options[i].color : textPrimary, fontWeight: FontWeight.w700)),
+                    trailing: i == current ? Icon(Icons.check, color: options[i].color) : null,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      QuestNav.go(i);
+                    },
+                  ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

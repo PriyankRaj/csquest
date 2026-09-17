@@ -71,7 +71,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
         : cqBlockDefs.keys.where((id) => !cqBlockDefs[id]!.isContainer).toList();
     final chosen = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: QuestColors.cqPanel,
+      backgroundColor: QuestColors.of(context).panel,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       // Without this, the sheet route itself caps height at ~56% of the
       // screen regardless of what our own FractionallySizedBox asks for —
@@ -89,9 +89,9 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Text('🧱 Add a block', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: Colors.black)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Text('🧱 Add a block', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: QuestColors.of(context).textPrimary)),
                 ),
                 Expanded(
                   child: ListView(
@@ -107,7 +107,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
                             return ListTile(
                               onTap: () => Navigator.of(context).pop(id),
                               leading: CircleAvatar(backgroundColor: def.color, radius: 14),
-                              title: Text(_labelPreview(def), style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 13)),
+                              title: Text(_labelPreview(def), style: TextStyle(color: QuestColors.of(context).textPrimary, fontWeight: FontWeight.w600, fontSize: 13)),
                             );
                           }),
                         ],
@@ -130,7 +130,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
   Future<void> _openCharacterPicker() async {
     final chosen = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: QuestColors.cqPanel,
+      backgroundColor: QuestColors.of(context).panel,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => SafeArea(
         child: Padding(
@@ -139,9 +139,9 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('🎭 Pick your character', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: Colors.black)),
+              Text('🎭 Pick your character', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: QuestColors.of(context).textPrimary)),
               const SizedBox(height: 4),
-              const Text('This is who you\'ll be moving and animating on the stage.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+              Text('This is who you\'ll be moving and animating on the stage.', style: TextStyle(fontSize: 12, color: QuestColors.of(context).textDim)),
               const SizedBox(height: 14),
               Wrap(
                 spacing: 10,
@@ -213,11 +213,11 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: QuestColors.cqPanel,
+        backgroundColor: QuestColors.of(context).panel,
         title: const Text('Reset this lesson?'),
-        content: const Text(
+        content: Text(
           'Your blocks will be cleared and the script restored to its starting point.',
-          style: TextStyle(color: Colors.black87),
+          style: TextStyle(color: QuestColors.of(context).textPrimary),
         ),
         actions: [
           TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Cancel')),
@@ -359,9 +359,9 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          backgroundColor: QuestColors.cqPanel,
+          backgroundColor: QuestColors.of(context).panel,
           title: const Text('🤔 Not quite'),
-          content: Text(result.message, style: const TextStyle(color: Colors.black87)),
+          content: Text(result.message, style: TextStyle(color: QuestColors.of(context).textPrimary)),
           actions: [
             TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK')),
           ],
@@ -376,9 +376,9 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     await showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: QuestColors.cqPanel,
+        backgroundColor: QuestColors.of(context).panel,
         title: const Text('🎉 Nailed it!'),
-        content: Text(result.message, style: const TextStyle(color: Colors.black87)),
+        content: Text(result.message, style: TextStyle(color: QuestColors.of(context).textPrimary)),
         actions: [
           TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Stay here')),
           FilledButton(
@@ -404,45 +404,44 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
   @override
   Widget build(BuildContext context) {
     final l = widget.lesson;
-    return Theme(
-      data: ThemeData.light().copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: QuestColors.cqMotion),
+    // No forced Theme.light() override here any more — the editor follows
+    // whatever light/dark theme the rest of the app is using. The app bar
+    // keeps its own fixed Code Quest blue regardless, same as block-category
+    // colors elsewhere in this screen (see QuestColors.cqMotion).
+    return Scaffold(
+      backgroundColor: QuestColors.of(context).bg,
+      appBar: AppBar(
+        backgroundColor: QuestColors.cqMotion,
+        foregroundColor: Colors.white,
+        title: Text('${l.glyph} ${l.title}'),
+        actions: [
+          IconButton(
+            tooltip: 'Reset lesson',
+            icon: const Icon(Icons.replay),
+            onPressed: _confirmReset,
+          ),
+          const HomeAction(),
+          const QuestSwitcherAction(current: 2),
+        ],
       ),
-      child: Scaffold(
-        backgroundColor: QuestColors.cqBg,
-        appBar: AppBar(
-          backgroundColor: QuestColors.cqMotion,
-          foregroundColor: Colors.white,
-          title: Text('${l.glyph} ${l.title}'),
-          actions: [
-            IconButton(
-              tooltip: 'Reset lesson',
-              icon: const Icon(Icons.replay),
-              onPressed: _confirmReset,
-            ),
-            const HomeAction(),
-            const QuestSwitcherAction(current: 2),
+      // Tapping anywhere outside an input field dismisses the keyboard —
+      // without this, a number field's keyboard stays up after typing
+      // since nothing else in this screen ever claims focus to replace it.
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Column(
+          children: [
+            _buildStage(),
+            _buildCtaRow(),
+            Expanded(child: _buildScriptArea()),
           ],
         ),
-        // Tapping anywhere outside an input field dismisses the keyboard —
-        // without this, a number field's keyboard stays up after typing
-        // since nothing else in this screen ever claims focus to replace it.
-        body: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-            children: [
-              _buildStage(),
-              _buildCtaRow(),
-              Expanded(child: _buildScriptArea()),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _openPalette(into: _script),
-          icon: const Icon(Icons.add),
-          label: const Text('Block'),
-        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _openPalette(into: _script),
+        icon: const Icon(Icons.add),
+        label: const Text('Block'),
       ),
     );
   }
@@ -567,23 +566,23 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Theme(
-            data: ThemeData.light(),
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               tilePadding: EdgeInsets.zero,
               leading: const Text('🎯', style: TextStyle(fontSize: 18)),
-              title: Text(l.target, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.black)),
+              title: Text(l.target, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: QuestColors.of(context).textPrimary)),
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l.narrator, style: const TextStyle(fontSize: 12.5, color: Colors.black54)),
+                      Text(l.narrator, style: TextStyle(fontSize: 12.5, color: QuestColors.of(context).textDim)),
                       const SizedBox(height: 6),
                       for (final s in l.steps)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 2),
-                          child: Text('• $s', style: const TextStyle(fontSize: 12.5, color: Colors.black87)),
+                          child: Text('• $s', style: TextStyle(fontSize: 12.5, color: QuestColors.of(context).textPrimary)),
                         ),
                     ],
                   ),
@@ -704,9 +703,9 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     if (list.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(border: Border.all(color: const Color(0xFFD8DCEA), style: BorderStyle.solid), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(border: Border.all(color: QuestColors.of(context).textDim.withValues(alpha: 0.35)), borderRadius: BorderRadius.circular(10)),
         alignment: Alignment.center,
-        child: Text(emptyLabel, style: const TextStyle(color: Colors.black38, fontSize: 12)),
+        child: Text(emptyLabel, style: TextStyle(color: QuestColors.of(context).textDim, fontSize: 12)),
       );
     }
     return ReorderableListView(

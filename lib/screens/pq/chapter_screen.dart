@@ -46,21 +46,21 @@ class _ChapterScreenState extends State<ChapterScreen> {
           children: [
             Row(
               children: [
-                CircleAvatar(radius: 22, backgroundColor: QuestColors.panel2, child: Text(c.avatar, style: const TextStyle(fontSize: 20))),
+                CircleAvatar(radius: 22, backgroundColor: QuestColors.of(context).panel2, child: Text(c.avatar, style: const TextStyle(fontSize: 20))),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Process', style: TextStyle(fontWeight: FontWeight.w700)),
-                      Text(c.role, style: const TextStyle(fontSize: 12, color: Colors.white54)),
+                      Text(c.role, style: TextStyle(fontSize: 12, color: QuestColors.of(context).textDim)),
                     ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            Text(c.bodyIntro, style: const TextStyle(fontSize: 15, height: 1.5, color: Colors.white)),
+            Text(c.bodyIntro, style: TextStyle(fontSize: 15, height: 1.5, color: QuestColors.of(context).textPrimary)),
             for (final hint in c.calloutHints)
               Theme(
                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -71,13 +71,13 @@ class _ChapterScreenState extends State<ChapterScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Text(hint, style: const TextStyle(fontSize: 13, color: Colors.white70)),
+                      child: Text(hint, style: TextStyle(fontSize: 13, color: QuestColors.of(context).textDim)),
                     ),
                   ],
                 ),
               ),
             const Divider(height: 32),
-            Text('🧩 Puzzle time', style: TextStyle(fontWeight: FontWeight.w800, color: QuestColors.accent)),
+            Text('🧩 Puzzle time', style: TextStyle(fontWeight: FontWeight.w800, color: QuestColors.of(context).accent)),
             const SizedBox(height: 12),
             switch (c.puzzleType) {
               PuzzleType.mcq => McqPuzzleWidget(puzzle: c.mcq!, onChecked: (ok) { if (ok) _onSolved(); }),

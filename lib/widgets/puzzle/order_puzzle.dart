@@ -38,7 +38,7 @@ class _OrderPuzzleWidgetState extends State<OrderPuzzleWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(p.instructions, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+        Text(p.instructions, style: TextStyle(fontSize: 14, color: QuestColors.of(context).textDim)),
         const SizedBox(height: 12),
         ReorderableListView.builder(
           shrinkWrap: true,
@@ -58,16 +58,16 @@ class _OrderPuzzleWidgetState extends State<OrderPuzzleWidget> {
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: QuestColors.panel2,
+                color: QuestColors.of(context).panel2,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: QuestColors.textDim.withValues(alpha: 0.3)),
+                border: Border.all(color: QuestColors.of(context).textDim.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
-                  Text('${i + 1}.', style: const TextStyle(color: Colors.white54, fontWeight: FontWeight.w700)),
+                  Text('${i + 1}.', style: TextStyle(color: QuestColors.of(context).textDim, fontWeight: FontWeight.w700)),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(item.label, style: const TextStyle(color: Colors.white))),
-                  const Icon(Icons.drag_handle, color: Colors.white38),
+                  Expanded(child: Text(item.label, style: TextStyle(color: QuestColors.of(context).textPrimary))),
+                  Icon(Icons.drag_handle, color: QuestColors.of(context).textDim),
                 ],
               ),
             );

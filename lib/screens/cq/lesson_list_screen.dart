@@ -48,7 +48,7 @@ class _LessonListScreenState extends State<LessonListScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(widget.topic.tagline, style: const TextStyle(color: QuestColors.textDim)),
+              child: Text(widget.topic.tagline, style: TextStyle(color: QuestColors.of(context).textDim)),
             ),
           ),
           Expanded(
@@ -68,7 +68,7 @@ class _LessonListScreenState extends State<LessonListScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 4, bottom: 4),
-                      child: Text('🎯 ${l.target}', style: const TextStyle(fontSize: 11, color: QuestColors.textDim), textAlign: TextAlign.center),
+                      child: Text('🎯 ${l.target}', style: TextStyle(fontSize: 11, color: QuestColors.of(context).textDim), textAlign: TextAlign.center),
                     ),
                   ],
                 );

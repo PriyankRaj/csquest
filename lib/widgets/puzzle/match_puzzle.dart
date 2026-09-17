@@ -62,19 +62,19 @@ class _MatchPuzzleWidgetState extends State<MatchPuzzleWidget> {
     final matched = _matched.contains(id);
     final wrong = isLeft ? _wrongLeft == id : _wrongRight == id;
     final selected = isLeft ? _selectedLeftId == id : _selectedRightId == id;
-    Color border = QuestColors.textDim.withValues(alpha: 0.4);
+    Color border = QuestColors.of(context).textDim.withValues(alpha: 0.4);
     Color? fill;
-    Color textColor = Colors.white;
+    Color textColor = QuestColors.of(context).textPrimary;
     if (matched) {
-      border = QuestColors.accent;
-      fill = QuestColors.accent.withValues(alpha: 0.15);
-      textColor = QuestColors.accent;
+      border = QuestColors.of(context).accent;
+      fill = QuestColors.of(context).accent.withValues(alpha: 0.15);
+      textColor = QuestColors.of(context).accent;
     } else if (wrong) {
-      border = QuestColors.danger;
-      fill = QuestColors.danger.withValues(alpha: 0.15);
+      border = QuestColors.of(context).danger;
+      fill = QuestColors.of(context).danger.withValues(alpha: 0.15);
     } else if (selected) {
-      border = QuestColors.accent2;
-      fill = QuestColors.accent2.withValues(alpha: 0.12);
+      border = QuestColors.of(context).accent2;
+      fill = QuestColors.of(context).accent2.withValues(alpha: 0.12);
     }
     return GestureDetector(
       onTap: matched ? null : () => _pick(id, isLeft: isLeft),
@@ -93,9 +93,9 @@ class _MatchPuzzleWidgetState extends State<MatchPuzzleWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(p.instructions, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+        Text(p.instructions, style: TextStyle(fontSize: 14, color: QuestColors.of(context).textDim)),
         const SizedBox(height: 10),
-        Text('Matched ${_matched.length}/${p.pairs.length} 🧩', style: const TextStyle(fontSize: 12, color: QuestColors.textDim, fontWeight: FontWeight.w700)),
+        Text('Matched ${_matched.length}/${p.pairs.length} 🧩', style: TextStyle(fontSize: 12, color: QuestColors.of(context).textDim, fontWeight: FontWeight.w700)),
         const SizedBox(height: 8),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,8 +110,8 @@ class _MatchPuzzleWidgetState extends State<MatchPuzzleWidget> {
             padding: const EdgeInsets.only(top: 8),
             child: Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: QuestColors.accent.withValues(alpha: 0.12), border: Border.all(color: QuestColors.accent), borderRadius: BorderRadius.circular(12)),
-              child: Text(p.explainOk, style: const TextStyle(color: QuestColors.accent, fontWeight: FontWeight.w600)),
+              decoration: BoxDecoration(color: QuestColors.of(context).accent.withValues(alpha: 0.12), border: Border.all(color: QuestColors.of(context).accent), borderRadius: BorderRadius.circular(12)),
+              child: Text(p.explainOk, style: TextStyle(color: QuestColors.of(context).accent, fontWeight: FontWeight.w600)),
             ),
           ),
       ],

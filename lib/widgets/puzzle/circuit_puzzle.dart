@@ -36,11 +36,11 @@ class _CircuitPuzzleWidgetState extends State<CircuitPuzzleWidget> {
         alignment: Alignment.center,
         margin: const EdgeInsets.only(right: 14),
         decoration: BoxDecoration(
-          color: on ? QuestColors.accent : QuestColors.panel2,
+          color: on ? QuestColors.of(context).accent : QuestColors.of(context).panel2,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: on ? QuestColors.accent : QuestColors.textDim.withValues(alpha: 0.4)),
+          border: Border.all(color: on ? QuestColors.of(context).accent : QuestColors.of(context).textDim.withValues(alpha: 0.4)),
         ),
-        child: Text('$label: $value', style: TextStyle(color: on ? const Color(0xFF0B1220) : Colors.white, fontWeight: FontWeight.w700)),
+        child: Text('$label: $value', style: TextStyle(color: on ? const Color(0xFF0B1220) : QuestColors.of(context).textPrimary, fontWeight: FontWeight.w700)),
       ),
     );
   }
@@ -51,7 +51,7 @@ class _CircuitPuzzleWidgetState extends State<CircuitPuzzleWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(p.instructions, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+        Text(p.instructions, style: TextStyle(fontSize: 14, color: QuestColors.of(context).textDim)),
         const SizedBox(height: 14),
         Row(
           children: [
@@ -61,10 +61,10 @@ class _CircuitPuzzleWidgetState extends State<CircuitPuzzleWidget> {
               width: 60, height: 60, alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _lit ? QuestColors.accent2 : QuestColors.panel2,
-                boxShadow: _lit ? [BoxShadow(color: QuestColors.accent2.withValues(alpha: 0.6), blurRadius: 16, spreadRadius: 2)] : null,
+                color: _lit ? QuestColors.of(context).accent2 : QuestColors.of(context).panel2,
+                boxShadow: _lit ? [BoxShadow(color: QuestColors.of(context).accent2.withValues(alpha: 0.6), blurRadius: 16, spreadRadius: 2)] : null,
               ),
-              child: Text(p.gate == CircuitGate.and ? 'AND' : 'OR', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.black87)),
+              child: Text(p.gate == CircuitGate.and ? 'AND' : 'OR', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: _lit ? const Color(0xFF0B1220) : QuestColors.of(context).textPrimary)),
             ),
           ],
         ),

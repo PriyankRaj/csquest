@@ -20,9 +20,9 @@ class TopicListScreen extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          // 0.95 was too tight once the "Coming soon" badge line was added —
-          // it overflowed on every locked card. Give real breathing room.
-          childAspectRatio: 0.78,
+          // Shorter than before (was 0.78, left a slab of empty space below
+          // the text on every card) now that the icon fills more of the tile.
+          childAspectRatio: 0.92,
         ),
         itemCount: cqTopics.length,
         itemBuilder: (context, i) {
@@ -38,14 +38,14 @@ class TopicListScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(14),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(radius: 20, backgroundColor: t.color.withValues(alpha: 0.2), child: Text(t.icon, style: const TextStyle(fontSize: 18))),
-                      const SizedBox(height: 10),
-                      Text(t.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5), maxLines: 2, overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 3),
-                      Text(t.place, style: const TextStyle(fontSize: 10.5, color: QuestColors.textDim), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      CircleAvatar(radius: 32, backgroundColor: t.color.withValues(alpha: 0.2), child: Text(t.icon, style: const TextStyle(fontSize: 30))),
+                      const SizedBox(height: 12),
+                      Text(t.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13.5), maxLines: 2, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 4),
+                      Text(t.place, style: const TextStyle(fontSize: 11, color: QuestColors.textDim), maxLines: 1, overflow: TextOverflow.ellipsis),
                       if (!t.available)
                         Padding(
                           padding: const EdgeInsets.only(top: 6),

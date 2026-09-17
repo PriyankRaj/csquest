@@ -48,57 +48,15 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => QuestNav.go(2),
               ),
               const SizedBox(height: 16),
-              _QuestCard(
+              _FeaturedQuestCard(
                 emoji: '🗺️',
+                badge: '🎓 Learn & explore',
                 title: 'Process Quest',
                 subtitle: 'Learn computer science subjects — Operating Systems, Data Structures, Networks, and more.',
-                accent: QuestColors.accent,
+                color: QuestColors.accent,
+                buttonLabel: 'Start Learning ➜',
                 onTap: () => QuestNav.go(1),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _QuestCard extends StatelessWidget {
-  final String emoji;
-  final String title;
-  final String subtitle;
-  final Color accent;
-  final VoidCallback onTap;
-  const _QuestCard({required this.emoji, required this.title, required this.subtitle, required this.accent, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: accent.withValues(alpha: 0.4)),
-          ),
-          child: Row(
-            children: [
-              CircleAvatar(radius: 26, backgroundColor: accent.withValues(alpha: 0.15), child: Text(emoji, style: const TextStyle(fontSize: 24))),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: accent)),
-                    const SizedBox(height: 4),
-                    Text(subtitle, style: const TextStyle(fontSize: 12.5, color: QuestColors.textDim)),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 6),
-              Icon(Icons.chevron_right, color: accent),
             ],
           ),
         ),

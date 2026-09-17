@@ -599,12 +599,12 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     );
   }
 
-  // The drag_handle icon — not the whole block — is the actual drag
-  // trigger. Blocks are mostly filled with TextFormFields (number/text
-  // params), and a whole-block long-press recognizer reliably loses the
-  // gesture-arena race against a text field's own tap/long-press handling
-  // (which claims the touch for cursor placement / text selection). A
-  // dedicated handle with no competing recognizer on it has no such race.
+  // A dedicated, always-present drag trigger alongside the wider draggable
+  // area on the block's literal-text words (see _labelLiteral) — number/text
+  // TextFormFields still need their own taps for editing, so neither this
+  // nor the literals wrap the fields themselves: a whole-block wrap
+  // (fields included) reliably lost the gesture-arena race against a text
+  // field's own tap/long-press handling for cursor placement / selection.
   Widget _dragHandle(int index) {
     return ReorderableDragStartListener(
       index: index,
@@ -633,7 +633,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     );
   }
 
-  Widget _blockLabelRow(BlockInstance b) {
+  Widget _blockLabelRow(BlockInstance b, int index) {
     final def = cqBlockDefs[b.defId]!;
     final paramsByName = {for (final p in def.params) p.name: p};
     // NOTE: String.split(RegExp) in Dart discards the matched delimiter text
@@ -644,21 +644,30 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     final children = <Widget>[];
     var last = 0;
     for (final m in regex.allMatches(def.label)) {
-      if (m.start > last) children.add(_labelLiteral(def.label.substring(last, m.start)));
+      if (m.start > last) children.add(_labelLiteral(def.label.substring(last, m.start), index));
       children.add(_labelValueField(b, paramsByName[m.group(1)!]!));
       last = m.end;
     }
-    if (last < def.label.length) children.add(_labelLiteral(def.label.substring(last)));
+    if (last < def.label.length) children.add(_labelLiteral(def.label.substring(last), index));
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: children,
     );
   }
 
-  Widget _labelLiteral(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12.5)),
+  // Wrapping each literal word (not the number/text fields next to them,
+  // which need their own taps for editing) is how the draggable area
+  // extends across most of a block's surface instead of just the handle
+  // icon — literal spans and field spans are laid out side by side by
+  // Wrap, never overlapping, so this can't reintroduce the arena conflict
+  // a whole-block wrap had with the fields (see _dragHandle).
+  Widget _labelLiteral(String text, int index) {
+    return ReorderableDelayedDragStartListener(
+      index: index,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 6),
+        child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12.5)),
+      ),
     );
   }
 
@@ -717,7 +726,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
             key: ValueKey(b),
             child: cqBlockDefs[b.defId]!.isContainer
                 ? _containerBlock(list, b, i)
-                : _blockChrome(b, index: i, onDelete: () => _removeBlock(list, b), child: _blockLabelRow(b)),
+                : _blockChrome(b, index: i, onDelete: () => _removeBlock(list, b), child: _blockLabelRow(b, i)),
           ),
       ],
     );
@@ -733,7 +742,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
         children: [
           Row(
             children: [
-              Expanded(child: _blockLabelRow(b)),
+              Expanded(child: _blockLabelRow(b, index)),
               GestureDetector(onTap: () => _removeBlock(owner, b), child: const Icon(Icons.close, color: Colors.white70, size: 18)),
               _dragHandle(index),
             ],

@@ -8,6 +8,12 @@ class ProgressStore {
   ProgressStore._(this._prefs);
   final SharedPreferences _prefs;
   static const _key = 'quest_completed_v1';
+  static const _characterKey = 'quest_character_v1';
+
+  // The Code Quest stage sprite — the thing lessons actually move/animate —
+  // is a separate, cosmetic choice from "Process the turtle", the fixed
+  // narrator identity baked into lesson text everywhere else in the app.
+  static const defaultCharacter = '🐢';
 
   static Future<ProgressStore> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -25,5 +31,11 @@ class ProgressStore {
 
   Future<void> reset() async {
     await _prefs.setStringList(_key, const []);
+  }
+
+  String get character => _prefs.getString(_characterKey) ?? defaultCharacter;
+
+  Future<void> setCharacter(String emoji) async {
+    await _prefs.setString(_characterKey, emoji);
   }
 }

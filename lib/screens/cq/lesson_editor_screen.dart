@@ -32,11 +32,17 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
   num _scoreVar = 0;
   String? _sayText;
   int _sayGen = 0; // invalidates a stale "clear the bubble" timer
+  late String _character;
+
+  // Not lesson-specific — the same character choice follows you across
+  // every lesson, like picking an avatar once.
+  static const _characterOptions = ['🐢', '🐱', '🐶', '🦊', '🐰', '🐸', '🐼', '🐧', '🦄', '🤖', '👾', '🦖'];
 
   @override
   void initState() {
     super.initState();
     _script = widget.lesson.starter();
+    _character = progressStore.character;
   }
 
   @override
@@ -119,6 +125,58 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     // just drop it in with its default and let the inline field take it
     // from there.
     if (chosen != null) _addBlock(chosen, into: into);
+  }
+
+  Future<void> _openCharacterPicker() async {
+    final chosen = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: QuestColors.cqPanel,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('🎭 Pick your character', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: Colors.black)),
+              const SizedBox(height: 4),
+              const Text('This is who you\'ll be moving and animating on the stage.', style: TextStyle(fontSize: 12, color: Colors.black54)),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  for (final emoji in _characterOptions)
+                    InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: () => Navigator.of(context).pop(emoji),
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: emoji == _character ? QuestColors.cqMotion.withValues(alpha: 0.15) : const Color(0xFFF4F6FB),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: emoji == _character ? QuestColors.cqMotion : const Color(0xFFD8DCEA),
+                            width: emoji == _character ? 2 : 1,
+                          ),
+                        ),
+                        child: Text(emoji, style: const TextStyle(fontSize: 28)),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (chosen != null && chosen != _character) {
+      setState(() => _character = chosen);
+      await progressStore.setCharacter(chosen);
+    }
   }
 
   String _labelPreview(BlockDef def) {
@@ -414,7 +472,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
-                      const Text('🐢', style: TextStyle(fontSize: 34)),
+                      Text(_character, style: const TextStyle(fontSize: 34)),
                       if (_sayText != null)
                         Positioned(
                           bottom: 34,
@@ -437,6 +495,23 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.9), borderRadius: BorderRadius.circular(8), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 3)]),
                 child: Text('Score: $_scoreVar', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.black87)),
+              ),
+            ),
+            Positioned(
+              right: 8,
+              top: 8,
+              child: Material(
+                color: Colors.white.withValues(alpha: 0.9),
+                shape: const CircleBorder(),
+                elevation: 1,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: _openCharacterPicker,
+                  child: const Padding(
+                    padding: EdgeInsets.all(7),
+                    child: Icon(Icons.face_retouching_natural, size: 16, color: Colors.black87),
+                  ),
+                ),
               ),
             ),
           ],

@@ -14,7 +14,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('🐢 Quest Hub'),
+        title: const Row(
+          children: [
+            Text('🐢', style: TextStyle(fontSize: 30)),
+            SizedBox(width: 8),
+            Text('Quest Hub'),
+          ],
+        ),
         actions: const [QuestSwitcherAction(current: 0)],
       ),
       body: SafeArea(

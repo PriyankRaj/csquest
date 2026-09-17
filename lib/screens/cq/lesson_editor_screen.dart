@@ -599,18 +599,35 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     );
   }
 
-  Widget _blockChrome(BlockInstance b, {required VoidCallback onDelete, required Widget child}) {
+  // The drag_handle icon — not the whole block — is the actual drag
+  // trigger. Blocks are mostly filled with TextFormFields (number/text
+  // params), and a whole-block long-press recognizer reliably loses the
+  // gesture-arena race against a text field's own tap/long-press handling
+  // (which claims the touch for cursor placement / text selection). A
+  // dedicated handle with no competing recognizer on it has no such race.
+  Widget _dragHandle(int index) {
+    return ReorderableDragStartListener(
+      index: index,
+      child: const Padding(
+        // Padded well past the icon's own bounds — 18px of icon is too
+        // small a touch target to reliably grab on a phone.
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: Icon(Icons.drag_handle, color: Colors.white70, size: 20),
+      ),
+    );
+  }
+
+  Widget _blockChrome(BlockInstance b, {required int index, required VoidCallback onDelete, required Widget child}) {
     final def = cqBlockDefs[b.defId]!;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: def.color, borderRadius: BorderRadius.circular(8)),
       child: Row(
         children: [
           Expanded(child: child),
           GestureDetector(onTap: onDelete, child: const Icon(Icons.close, color: Colors.white70, size: 18)),
-          const SizedBox(width: 4),
-          const Icon(Icons.drag_handle, color: Colors.white70, size: 18),
+          _dragHandle(index),
         ],
       ),
     );
@@ -670,12 +687,10 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
   }
 
   // A block list — the top-level script, and each container block's body —
-  // is its own independent ReorderableListView, long-press-draggable on
-  // mobile. Container items build their own header-only drag trigger (via
-  // buildDefaultDragHandles: false) instead of wrapping their whole card:
-  // wrapping the whole card would make its long-press recognizer overlap
-  // the nested list's per-block recognizers, so long-pressing a block
-  // *inside* a loop would race against dragging the loop itself.
+  // is its own independent ReorderableListView, draggable via the handle
+  // icon on each block (see _dragHandle). Container items get their own
+  // header handle instead of a whole-card one, so grabbing a block *inside*
+  // a loop drags that block, not the loop around it.
   Widget _scriptList(List<BlockInstance> list, {String emptyLabel = 'Tap "+ Block" to start your script'}) {
     if (list.isEmpty) {
       return Container(
@@ -702,10 +717,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
             key: ValueKey(b),
             child: cqBlockDefs[b.defId]!.isContainer
                 ? _containerBlock(list, b, i)
-                : ReorderableDelayedDragStartListener(
-                    index: i,
-                    child: _blockChrome(b, onDelete: () => _removeBlock(list, b), child: _blockLabelRow(b)),
-                  ),
+                : _blockChrome(b, index: i, onDelete: () => _removeBlock(list, b), child: _blockLabelRow(b)),
           ),
       ],
     );
@@ -719,19 +731,12 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Only the header triggers this block's own long-press drag —
-          // long-pressing anywhere in the body below drags an inner block
-          // instead, within its own nested ReorderableListView.
-          ReorderableDelayedDragStartListener(
-            index: index,
-            child: Row(
-              children: [
-                Expanded(child: _blockLabelRow(b)),
-                GestureDetector(onTap: () => _removeBlock(owner, b), child: const Icon(Icons.close, color: Colors.white70, size: 18)),
-                const SizedBox(width: 4),
-                const Icon(Icons.drag_handle, color: Colors.white70, size: 18),
-              ],
-            ),
+          Row(
+            children: [
+              Expanded(child: _blockLabelRow(b)),
+              GestureDetector(onTap: () => _removeBlock(owner, b), child: const Icon(Icons.close, color: Colors.white70, size: 18)),
+              _dragHandle(index),
+            ],
           ),
           Container(
             margin: const EdgeInsets.only(top: 6, left: 10),

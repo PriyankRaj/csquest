@@ -1,0 +1,244 @@
+<title>CS Quest Privacy Policy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F7FB;
+    --panel: #FFFFFF;
+    --panel-line: #E3E7F0;
+    --ink: #14181F;
+    --ink-dim: #5B6478;
+    --accent: #1C9A78;
+    --accent-soft: #E4F5EF;
+    --accent2: #B8790A;
+    --accent2-soft: #FBF0DD;
+    --focus: #1C9A78;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1420;
+      --panel: #161D2E;
+      --panel-line: #26304A;
+      --ink: #F2F4F9;
+      --ink-dim: #93A0BF;
+      --accent: #3DDBB0;
+      --accent-soft: #17352C;
+      --accent2: #FFC24B;
+      --accent2-soft: #3A2E12;
+      --focus: #3DDBB0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1420;
+    --panel: #161D2E;
+    --panel-line: #26304A;
+    --ink: #F2F4F9;
+    --ink-dim: #93A0BF;
+    --accent: #3DDBB0;
+    --accent-soft: #17352C;
+    --accent2: #FFC24B;
+    --accent2-soft: #3A2E12;
+    --focus: #3DDBB0;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    padding-inline: max(20px, calc((100% - 720px) / 2));
+    padding-block: 56px 80px;
+  }
+  .wrap { max-width: 680px; margin-inline: auto; }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .badge {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+  }
+  header h1 {
+    font-family: 'Baloo 2', 'Source Serif 4', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 2px 0 0;
+    color: var(--ink-dim);
+    font-size: 0.92rem;
+  }
+
+  .verdict {
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-bottom: 40px;
+  }
+  .verdict .eyebrow {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .verdict p {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .verdict p + p { margin-top: 10px; }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin: 40px 0 12px;
+    text-wrap: balance;
+  }
+  h2 .num {
+    display: inline-block;
+    min-width: 1.6em;
+    color: var(--accent2);
+    font-variant-numeric: tabular-nums;
+  }
+  p, li { color: var(--ink); }
+  p { margin: 0 0 14px; }
+  ul { margin: 0 0 14px; padding-left: 1.3em; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--accent); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 14px;
+    font-size: 0.95rem;
+  }
+  caption { display: none; }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--panel-line);
+    vertical-align: top;
+  }
+  th {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .tablewrap { overflow-x: auto; }
+
+  .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px; }
+  .pill {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--accent2-soft);
+    color: var(--accent2);
+    white-space: nowrap;
+  }
+
+  a { color: var(--accent); text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  footer {
+    margin-top: 52px;
+    padding-top: 20px;
+    border-top: 1px solid var(--panel-line);
+    color: var(--ink-dim);
+    font-size: 0.88rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    body { font-size: 16px; }
+    header h1 { font-size: 1.3rem; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="badge">🐢</div>
+    <div>
+      <h1>Computer Science Quest</h1>
+      <p>Privacy Policy &middot; effective September 17, 2026</p>
+    </div>
+  </header>
+
+  <div class="verdict">
+    <p class="eyebrow">The short version</p>
+    <p><strong>Computer Science Quest collects nothing.</strong> There are no accounts, no analytics, no ads, and no network requests of any kind. The handful of settings the app remembers &mdash; your lesson progress, your chosen on-screen character, and light/dark appearance &mdash; are saved only in local storage on your own device, in a format only this app can read.</p>
+    <p>Uninstalling the app deletes all of it. Nothing is ever sent anywhere.</p>
+  </div>
+
+  <h2><span class="num">1.</span> Who this policy covers</h2>
+  <p>This policy applies to Computer Science Quest (bundle ID <code>com.csquest.app</code>), an iOS app for learning computer science subjects (Process Quest) and block-based coding (Code Quest). It's built and maintained by an individual developer, not a company, and is offered free with no in-app purchases.</p>
+
+  <h2><span class="num">2.</span> What the app stores, and where</h2>
+  <p>The app keeps a small amount of state using Apple's standard on-device storage (<code>UserDefaults</code>/<code>SharedPreferences</code>). None of it identifies you personally, and none of it leaves your device:</p>
+  <div class="tablewrap">
+    <table>
+      <caption>What is stored locally</caption>
+      <thead>
+        <tr><th>Stored value</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Completed lessons and chapters</td><td>Remembers which lessons you've finished, so the path picks up where you left off</td></tr>
+        <tr><td>Chosen on-screen character</td><td>Remembers which avatar (turtle, cat, fox, robot, etc.) you picked for the Code Quest stage</td></tr>
+        <tr><td>Light/Dark/System appearance choice</td><td>Remembers how you like the app to look</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>That's the complete list. There is no user account, no device identifier, no location data, no camera or microphone access, and no contacts access &mdash; the app doesn't request any of those permissions because it doesn't need them.</p>
+
+  <h2><span class="num">3.</span> What the app does <em>not</em> do</h2>
+  <div class="pillrow">
+    <span class="pill">No analytics SDKs</span>
+    <span class="pill">No ad networks</span>
+    <span class="pill">No network requests</span>
+    <span class="pill">No accounts or sign-in</span>
+    <span class="pill">No crash reporting service</span>
+    <span class="pill">No cookies</span>
+  </div>
+  <p>The app's only two dependencies beyond Flutter itself are <code>cupertino_icons</code> (icon glyphs) and <code>shared_preferences</code> (the local storage described above) &mdash; both of which run entirely on-device. There is no code in the app that can transmit data anywhere, because it never establishes a network connection in the first place.</p>
+
+  <h2><span class="num">4.</span> Children's privacy</h2>
+  <p>Computer Science Quest is rated 4+ and is often used by children. Because the app collects no data of any kind, from anyone, it does not knowingly collect personal information from children under 13, and there is no mechanism by which it could.</p>
+
+  <h2><span class="num">5.</span> Changes to this policy</h2>
+  <p>If the app's data practices ever change &mdash; for example, if a future version adds an optional feature that requires network access &mdash; this page will be updated first, and the version made available through the app's listing will reflect the update before that version ships.</p>
+
+  <h2><span class="num">6.</span> Contact</h2>
+  <p>Questions about this policy or the app can be sent to <a href="mailto:priyank@hams.co.in">priyank@hams.co.in</a>.</p>
+
+  <footer>
+    <span>Computer Science Quest</span>
+    <span>Last updated September 17, 2026</span>
+  </footer>
+</div>

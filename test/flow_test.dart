@@ -78,16 +78,19 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('move'), findsWidgets);
-    // Regression guard: the number field must actually render in the placed
+    // Regression guard: the value chip must actually render in the placed
     // block (previously silently dropped entirely — see _blockLabelRow),
     // pre-filled with the block's default.
-    final numberField = find.widgetWithText(TextFormField, '10');
-    expect(numberField, findsOneWidget);
+    final valueChip = find.text('10');
+    expect(valueChip, findsOneWidget);
 
-    // And it must actually be editable in place, per the current design.
-    await tester.enterText(numberField, '25');
+    // Changing it is tap-a-chip, never a keyboard: tap the value to open the
+    // option picker, then tap a different preset.
+    await tester.tap(valueChip);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(TextFormField, '25'), findsOneWidget);
+    await tester.tap(find.text('30').last);
+    await tester.pumpAndSettle();
+    expect(find.text('30'), findsOneWidget);
 
     // Check now lives in the CTA row below the canvas (always on-screen).
     await tester.tap(find.widgetWithText(FilledButton, 'Check'));

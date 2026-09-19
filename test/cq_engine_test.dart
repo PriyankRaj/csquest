@@ -73,14 +73,17 @@ void main() {
     await tester.tap(setScore);
     await tester.pumpAndSettle();
 
-    final valueField = find.widgetWithText(TextFormField, '0');
-    await tester.enterText(valueField, '7');
+    // Tap the value chip to open the option picker, then pick a preset —
+    // no keyboard input anywhere in this flow.
+    await tester.tap(find.text('0').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('10').last);
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(FilledButton, 'Run'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Score: 7'), findsOneWidget);
+    expect(find.text('Score: 10'), findsOneWidget);
   });
 
   testWidgets('Looks: say block accepts free text, not just numbers', (tester) async {
@@ -93,11 +96,16 @@ void main() {
     await tester.tap(sayBlock);
     await tester.pumpAndSettle();
 
-    final textField = find.widgetWithText(TextFormField, 'Hello!');
-    expect(textField, findsOneWidget);
-    await tester.enterText(textField, 'Wheee!');
+    final textChip = find.text('Hello!').last;
+    expect(textChip, findsOneWidget);
+
+    // Tap the text chip to open the option picker, then pick a preset
+    // phrase — text params are chip-picked too, never typed.
+    await tester.tap(textChip);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(TextFormField, 'Wheee!'), findsOneWidget);
+    await tester.tap(find.text('Woohoo!').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Woohoo!'), findsOneWidget);
   });
 
   testWidgets('Control: repeat is a container that accepts nested blocks', (tester) async {
@@ -118,6 +126,6 @@ void main() {
 
     // The nested move block should now render inside the repeat container.
     expect(find.textContaining('move'), findsWidgets);
-    expect(find.widgetWithText(TextFormField, '10'), findsOneWidget);
+    expect(find.text('10'), findsOneWidget);
   });
 }

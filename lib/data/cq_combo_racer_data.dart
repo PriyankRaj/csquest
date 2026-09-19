@@ -3,7 +3,7 @@ import 'cq_blocks.dart';
 
 /// "Build a Racing Game" — Racetrack Ridge. This is the CAPSTONE topic: it
 /// combines everything from Motion, Control, Looks, Sound and Variables into
-/// a single continuously-rolling "race" — Process the turtle laps a track,
+/// a single continuously-rolling "race" — Turtu the turtle laps a track,
 /// bounces off the walls, tracks laps/speed with the one project variable,
 /// and calls out the action with say/sound. There's no multi-sprite or
 /// checkpoint system in this engine, so "racing" here means: one turtle,
@@ -53,7 +53,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Rev the Engine',
     glyph: '🏎️',
     complexity: 2,
-    target: 'Get Process rolling forward onto Racetrack Ridge.',
+    target: 'Get Turtu rolling forward onto Racetrack Ridge.',
     narrator: "Welcome to Racetrack Ridge! Before anything fancy, let's just get me rolling.",
     steps: const ["Add a 'move steps' block (Motion).", 'Set the number above 0.', 'Tap Run and watch me roll onto the track.'],
     starter: () => [],
@@ -95,7 +95,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Point at the Starting Line',
     glyph: '🧭',
     complexity: 2,
-    target: 'Aim Process exactly down the track before the race starts.',
+    target: 'Aim Turtu exactly down the track before the race starts.',
     narrator: "Racers line up facing the exact same way. Let's aim me precisely.",
     steps: const ["Add 'point in direction' (Motion).", 'Set an exact heading, then Run.'],
     starter: () => [],
@@ -133,7 +133,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Straight to the Grid',
     glyph: '📍',
     complexity: 2,
-    target: 'Teleport Process to an exact spot on the starting grid.',
+    target: 'Teleport Turtu to an exact spot on the starting grid.',
     narrator: "Every race starts from a fixed grid position. Let's snap me there instantly.",
     steps: const ["Add 'go to x y' (Motion).", 'Set both numbers, then Run.'],
     starter: () => [],
@@ -151,7 +151,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Keep on Rolling',
     glyph: '🔁',
     complexity: 3,
-    target: 'Make Process roll forward forever, lap after lap.',
+    target: 'Make Turtu roll forward forever, lap after lap.',
     narrator: "A real race never stops after one move — let's keep me rolling forever.",
     steps: const ["Add a 'forever' block (Control).", "Put 'move steps' inside it."],
     starter: () => [BlockInstance('control_forever')],
@@ -231,7 +231,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Announce the Start',
     glyph: '💬',
     complexity: 3,
-    target: 'Have Process say something before the race begins.',
+    target: 'Have Turtu say something before the race begins.',
     narrator: "Every good race needs an announcer. Let's have me shout something first.",
     steps: const ["Add a 'say' block (Looks) before your forever loop.", 'Give it racing words!'],
     starter: () => [
@@ -284,7 +284,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Show Your Ride',
     glyph: '👀',
     complexity: 2,
-    target: 'Make sure Process is visible before the race begins.',
+    target: 'Make sure Turtu is visible before the race begins.',
     narrator: "Can't race if nobody can see the car! Let's make sure I'm showing.",
     steps: const ["Add a 'show' block (Looks) at the very start of your script."],
     starter: () => [],
@@ -536,7 +536,7 @@ final cqComboRacerLessons = <Lesson>[
     title: 'Horn on the Wall',
     glyph: '📢',
     complexity: 4,
-    target: 'Honk a sound every time Process bounces off a wall.',
+    target: 'Honk a sound every time Turtu bounces off a wall.',
     narrator: "Let's honk the horn every time I clip a wall — safety first!",
     steps: const ["Keep move + bounce inside forever.", "Add 'play sound' (Sound) right after the bounce block."],
     starter: () => [

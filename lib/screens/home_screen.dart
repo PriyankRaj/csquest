@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Two gamified ways to learn, both narrated by Process the turtle. Pick one to start.',
+                'Two gamified ways to learn — Process Quest with Process the turtle, Code Quest with Turtu the turtle. Pick one to start.',
                 style: TextStyle(color: QuestColors.of(context).textDim, fontSize: 13),
               ),
               const SizedBox(height: 20),

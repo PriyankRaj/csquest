@@ -21,9 +21,11 @@ class TopicListScreen extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          // Shorter than before (was 0.78, left a slab of empty space below
-          // the text on every card) now that the icon fills more of the tile.
-          childAspectRatio: 0.92,
+          // 0.92 looked right in isolation but overflowed by 20px on every
+          // card once a 2-line title + subtitle + "Coming soon" badge
+          // actually laid out — verified against a real overflow probe test,
+          // not just eyeballing a mock.
+          childAspectRatio: 0.72,
         ),
         itemCount: cqTopics.length,
         itemBuilder: (context, i) {

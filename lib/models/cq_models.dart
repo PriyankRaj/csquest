@@ -12,7 +12,10 @@ class BlockParam {
   final String label;
   final BlockParamKind kind;
   final Object defaultValue; // num for .number, String for .text
-  const BlockParam(this.name, this.label, this.defaultValue, {this.kind = BlockParamKind.number});
+  // The only choices offered when editing this param — picking from a fixed
+  // set means the whole app never needs a keyboard, not even for "say" text.
+  final List<Object> options;
+  const BlockParam(this.name, this.label, this.defaultValue, {this.kind = BlockParamKind.number, required this.options});
 }
 
 class BlockCategory {

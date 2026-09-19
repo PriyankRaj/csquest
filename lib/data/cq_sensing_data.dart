@@ -5,9 +5,9 @@ import 'cq_blocks.dart';
 ///
 /// IMPORTANT ENGINE NOTE: this engine has no generic sensing reporters and
 /// no generic if/else. The ONLY conditional block is `control_if_on_edge` —
-/// a container whose body runs only when Process is at the stage edge the
+/// a container whose body runs only when Turtu is at the stage edge the
 /// moment that block executes. Every lesson below is a decision built on
-/// "is Process at the edge right now, or not" — growing from a single
+/// "is Turtu at the edge right now, or not" — growing from a single
 /// one-shot check, to a continuously-checking loop, to layered combinations
 /// of loops, repeats, and variables around that one decision block.
 final cqSensingLessons = <Lesson>[
@@ -20,7 +20,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Edge Alert!',
     glyph: '🚨',
     complexity: 1,
-    target: "Make Process travel to the edge, then say something when it senses it.",
+    target: "Make Turtu travel to the edge, then say something when it senses it.",
     narrator: "I can feel when I reach the edge of the world. Let's practice noticing it out loud!",
     steps: const [
       "Add a 'move steps' block (Motion) so I travel toward the edge.",
@@ -76,7 +76,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Turn Away',
     glyph: '↻',
     complexity: 1,
-    target: "Turn Process around only when it senses the edge.",
+    target: "Turn Turtu around only when it senses the edge.",
     narrator: "Instead of just talking about the edge, let's actually do something useful: turn away from it.",
     steps: const [
       "Add a 'move steps' block.",
@@ -104,7 +104,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Duck Out of Sight',
     glyph: '🙈',
     complexity: 1,
-    target: "Hide Process the moment it senses the edge.",
+    target: "Hide Turtu the moment it senses the edge.",
     narrator: "Sometimes the smartest reaction to the edge is to disappear for a moment!",
     steps: const [
       "Add a 'move steps' block.",
@@ -162,7 +162,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Nudge Back Inward',
     glyph: '⬅️',
     complexity: 1,
-    target: "Nudge Process's x position back inward when it senses the edge.",
+    target: "Nudge Turtu's x position back inward when it senses the edge.",
     narrator: "Turning is one option. Another is to just shove myself back with a change to my x position.",
     steps: const [
       "Add a 'move steps' block.",
@@ -246,7 +246,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Count the Sighting',
     glyph: '🔢',
     complexity: 1,
-    target: "Use a variable to count that Process sensed the edge — just once for now.",
+    target: "Use a variable to count that Turtu sensed the edge — just once for now.",
     narrator: "Let's start keeping score. Every time I sense the edge, bump my Score up by one.",
     steps: const [
       "Add a 'move steps' block.",
@@ -390,7 +390,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Drop Down, Too',
     glyph: '⬇️',
     complexity: 1,
-    target: "React to the edge by nudging Process's y position.",
+    target: "React to the edge by nudging Turtu's y position.",
     narrator: "We nudged x before. Let's try the vertical nudge as our edge reaction now.",
     steps: const [
       "Add a 'move steps' block.",
@@ -538,7 +538,7 @@ final cqSensingLessons = <Lesson>[
     title: 'Counting Bounces',
     glyph: '🧮',
     complexity: 2,
-    target: "Count every single time Process senses the edge, forever.",
+    target: "Count every single time Turtu senses the edge, forever.",
     narrator: "Let's keep a running tally: every time I sense the edge, Score goes up by one — forever.",
     steps: const [
       "Add a 'forever' block.",

@@ -107,7 +107,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
                             return ListTile(
                               onTap: () => Navigator.of(context).pop(id),
                               leading: CircleAvatar(backgroundColor: def.color, radius: 14),
-                              title: Text(_labelPreview(def), style: TextStyle(color: QuestColors.of(context).textPrimary, fontWeight: FontWeight.w600, fontSize: 13)),
+                              title: Text(_labelPreview(def), style: TextStyle(color: QuestColors.of(context).textPrimary, fontWeight: FontWeight.w600, fontSize: 16)),
                             );
                           }),
                         ],
@@ -599,11 +599,11 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
   }
 
   // A dedicated, always-present drag trigger alongside the wider draggable
-  // area on the block's literal-text words (see _labelLiteral) — number/text
-  // TextFormFields still need their own taps for editing, so neither this
-  // nor the literals wrap the fields themselves: a whole-block wrap
-  // (fields included) reliably lost the gesture-arena race against a text
-  // field's own tap/long-press handling for cursor placement / selection.
+  // area on the block's literal-text words (see _labelLiteral) — the value
+  // chips still need their own tap to open the option picker, so neither
+  // this nor the literals wrap the fields themselves: a whole-block wrap
+  // (fields included) reliably lost the gesture-arena race against a
+  // chip's own tap handling.
   Widget _dragHandle(int index) {
     return ReorderableDragStartListener(
       index: index,
@@ -670,28 +670,77 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     );
   }
 
+  // Tap-to-pick, never a keyboard: every param ships a fixed set of options
+  // (see cq_blocks.dart), so choosing a value is always "tap a chip," even
+  // for the "say" block's text — no TextFormField anywhere in this screen.
   Widget _labelValueField(BlockInstance b, BlockParam param) {
     final isText = param.kind == BlockParamKind.text;
-    return SizedBox(
-      width: isText ? 90 : 46,
-      height: 28,
-      child: TextFormField(
-        initialValue: '${b.inputs[param.name] ?? param.defaultValue}',
-        style: const TextStyle(fontSize: 12, color: Colors.black),
-        textAlign: isText ? TextAlign.left : TextAlign.center,
-        decoration: const InputDecoration(
-          isDense: true,
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-          border: OutlineInputBorder(),
+    final current = b.inputs[param.name] ?? param.defaultValue;
+    return GestureDetector(
+      onTap: () => _pickOption(b, param),
+      child: Container(
+        // No `alignment:` here — on a Container this wraps the child in an
+        // Align that fills all available width under Wrap's loose-but-bounded
+        // constraints instead of shrink-wrapping, which stretched this chip
+        // across the entire block. mainAxisSize.min on the Row below is what
+        // actually keeps this compact.
+        constraints: BoxConstraints(minWidth: isText ? 90 : 46),
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: Colors.black26)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('$current', style: const TextStyle(fontSize: 13, color: Colors.black, fontWeight: FontWeight.w700)),
+            const SizedBox(width: 2),
+            const Icon(Icons.arrow_drop_down, size: 16, color: Colors.black54),
+          ],
         ),
-        keyboardType: isText ? TextInputType.text : TextInputType.number,
-        textInputAction: TextInputAction.done,
-        onChanged: (v) => b.inputs[param.name] = isText ? v : (num.tryParse(v) ?? 0),
-        onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
       ),
     );
+  }
+
+  Future<void> _pickOption(BlockInstance b, BlockParam param) async {
+    final current = b.inputs[param.name] ?? param.defaultValue;
+    final chosen = await showModalBottomSheet<Object>(
+      context: context,
+      backgroundColor: QuestColors.of(context).panel,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Pick ${param.label}', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: QuestColors.of(context).textPrimary)),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  for (final opt in param.options)
+                    InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () => Navigator.of(context).pop(opt),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: opt == current ? QuestColors.cqMotion.withValues(alpha: 0.15) : QuestColors.of(context).panel2,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: opt == current ? QuestColors.cqMotion : QuestColors.of(context).textDim.withValues(alpha: 0.4), width: opt == current ? 2 : 1),
+                        ),
+                        child: Text('$opt', style: TextStyle(color: QuestColors.of(context).textPrimary, fontWeight: FontWeight.w700, fontSize: 14)),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (chosen != null) setState(() => b.inputs[param.name] = chosen);
   }
 
   // A block list — the top-level script, and each container block's body —

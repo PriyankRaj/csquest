@@ -12,8 +12,8 @@ class ProgressStore {
   static const _themeModeKey = 'quest_theme_mode_v1';
 
   // The Code Quest stage sprite — the thing lessons actually move/animate —
-  // is a separate, cosmetic choice from "Process the turtle", the fixed
-  // narrator identity baked into lesson text everywhere else in the app.
+  // is a separate, cosmetic choice from "Turtu the turtle", the fixed
+  // narrator identity baked into lesson text everywhere else in Code Quest.
   static const defaultCharacter = '🐢';
 
   static Future<ProgressStore> load() async {

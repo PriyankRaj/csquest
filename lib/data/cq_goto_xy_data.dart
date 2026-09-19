@@ -4,7 +4,7 @@ import 'cq_blocks.dart';
 /// "Build a Teleporter" — Coordinate Cove. 60 lessons (601-660) built entirely
 /// around motion_goto_xy, growing from a single exact-coordinate jump up to
 /// deeply nested forever/repeat teleporter circuits that touch every block
-/// in the engine. Process narrates throughout as the wheeled turtle.
+/// in the engine. Turtu narrates throughout as the wheeled turtle.
 
 num _numOf(BlockInstance b, String key) => (b.inputs[key] as num?) ?? 0;
 String _textOf(BlockInstance b, String key) => (b.inputs[key] as String?) ?? '';
@@ -34,7 +34,7 @@ final cqGotoXyLessons = <Lesson>[
     title: 'Blink to Point A',
     glyph: '📍',
     complexity: 1,
-    target: 'Teleport Process to an exact spot with go to x y.',
+    target: 'Teleport Turtu to an exact spot with go to x y.',
     narrator: "Forget rolling all that way — just tell me where to appear!",
     steps: const ["Open the Motion tray.", "Tap 'go to x: y:' and add it.", "Set x to 50, then tap Run."],
     starter: () => [],

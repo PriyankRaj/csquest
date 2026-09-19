@@ -7,7 +7,7 @@ import 'cq_blocks.dart';
 /// blocks — there is no "when key pressed" or "when this sprite clicked".
 /// Every script just runs top-to-bottom on Run. So "events" here means the
 /// one real reactive thing this engine can do: automatically notice and
-/// respond to Process reaching the edge of the world, via
+/// respond to Turtu reaching the edge of the world, via
 /// `control_if_on_edge`. Lessons build from a single one-shot edge-reaction
 /// up to continuously-watching (`control_forever` + `control_if_on_edge`),
 /// counted reactions (`variables_change`), and layered multi-step reaction
@@ -42,7 +42,7 @@ final cqEventsLessons = <Lesson>[
     title: 'Edge Alert!',
     glyph: '🚨',
     complexity: 1,
-    target: 'Make Process react the moment it reaches the edge of the world.',
+    target: 'Make Turtu react the moment it reaches the edge of the world.',
     narrator: "I can't hear or see much, but I CAN feel the edge of the world. Let's react when it happens!",
     steps: const ["Add an 'if on edge' block (Control).", "Inside it, add a 'say' block (Looks) with a message."],
     starter: () => [BlockInstance('control_if_on_edge')],
@@ -80,7 +80,7 @@ final cqEventsLessons = <Lesson>[
     title: 'Vanish at the Wall',
     glyph: '👻',
     complexity: 1,
-    target: "Make Process disappear the instant it touches the edge.",
+    target: "Make Turtu disappear the instant it touches the edge.",
     narrator: "Watch this — the moment I feel the edge, I'll just... vanish.",
     steps: const ["Add an 'if on edge' block.", "Inside it, add 'hide' (Looks)."],
     starter: () => [BlockInstance('control_if_on_edge')],
@@ -99,7 +99,7 @@ final cqEventsLessons = <Lesson>[
     title: 'Reappear on Contact',
     glyph: '✨',
     complexity: 1,
-    target: 'React to the edge by showing Process again.',
+    target: 'React to the edge by showing Turtu again.',
     narrator: "Now the opposite trick — I'll pop back into view the second I reach the edge.",
     steps: const ["Add an 'if on edge' block.", "Inside it, add 'show' (Looks)."],
     starter: () => [BlockInstance('control_if_on_edge')],
@@ -336,7 +336,7 @@ final cqEventsLessons = <Lesson>[
     title: 'Always Watching',
     glyph: '👀',
     complexity: 2,
-    target: "Make Process watch for the edge forever, not just once.",
+    target: "Make Turtu watch for the edge forever, not just once.",
     narrator: "One reaction was fine, but a real reaction system never stops watching. Let's loop it.",
     steps: const ["Add a 'forever' block.", "Inside it, add an 'if on edge' block.", "Inside THAT, add 'say'."],
     starter: () => [BlockInstance('control_forever')],
@@ -1570,7 +1570,7 @@ final cqEventsLessons = <Lesson>[
   Lesson(
     id: 840,
     topicId: 'events',
-    title: 'Process, Fully Wired',
+    title: 'Turtu, Fully Wired',
     glyph: '🏆',
     complexity: 5,
     target: 'Build the ultimate reaction system: reset, patrol, react with count+say+beep, then a hide-and-show flourish.',
@@ -1601,7 +1601,7 @@ final cqEventsLessons = <Lesson>[
       if (!_bodyHas(repeat.first, 'looks_hide') || !_bodyHas(repeat.first, 'looks_show')) {
         return const LessonResult(false, "Put both 'hide' and 'show' inside the repeat block.");
       }
-      return const LessonResult(true, "Process, fully wired and ready to react to anything! 🏆");
+      return const LessonResult(true, "Turtu, fully wired and ready to react to anything! 🏆");
     },
   ),
 ];

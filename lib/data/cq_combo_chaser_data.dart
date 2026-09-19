@@ -5,8 +5,8 @@ import 'cq_blocks.dart';
 ///
 /// There's no multi-sprite engine in this app, so "catching a target" is
 /// simulated honestly with the single turtle: a `goto_xy` teleport represents
-/// the target appearing at a new spot, and Process "catching" it is really
-/// Process arriving at that spot (goto_xy) and banking the point
+/// the target appearing at a new spot, and Turtu "catching" it is really
+/// Turtu arriving at that spot (goto_xy) and banking the point
 /// (`variables_change` on the shared "Score" variable) with `looks_say` /
 /// `sound_play_click` feedback. Repeated goto_xy blocks at DIFFERENT
 /// coordinates simulate the target moving between rounds. `motion_if_on_edge_
@@ -165,7 +165,7 @@ final cqComboChaserLessons = <Lesson>[
     title: 'Spot the Target',
     glyph: '🎯',
     complexity: 2,
-    target: 'Teleport Process to a target spot with goto x/y.',
+    target: 'Teleport Turtu to a target spot with goto x/y.',
     narrator: "Welcome to Chase Canyon! A target just appeared out there — let's teleport straight to it.",
     steps: const ["Open Motion and add 'go to x: 0 y: 0'.", 'Change the numbers so the target is away from the middle.'],
     starter: () => [],
@@ -281,8 +281,8 @@ final cqComboChaserLessons = <Lesson>[
     title: 'Show Yourself',
     glyph: '👀',
     complexity: 2,
-    target: 'Show Process before the chase starts, then run the catch sequence.',
-    narrator: "Before any chase, make sure Process is actually visible on the canyon floor.",
+    target: 'Show Turtu before the chase starts, then run the catch sequence.',
+    narrator: "Before any chase, make sure Turtu is actually visible on the canyon floor.",
     steps: const ["Add 'show' (Looks) first.", 'Keep the teleport + Score change after it.'],
     starter: () => [
       BlockInstance('looks_show'),
@@ -292,7 +292,7 @@ final cqComboChaserLessons = <Lesson>[
     check: (script) {
       final flat = cqFlatten(script);
       if (!_before(flat, 'looks_show', 'motion_goto_xy')) {
-        return const LessonResult(false, "Add 'show' BEFORE the teleport — Process needs to be visible first.");
+        return const LessonResult(false, "Add 'show' BEFORE the teleport — Turtu needs to be visible first.");
       }
       if (_countPositiveChanges(flat) < 1) {
         return const LessonResult(false, "Keep a 'change Score by' block after the teleport.");
@@ -937,7 +937,7 @@ final cqComboChaserLessons = <Lesson>[
     title: 'Show, Then Chase Forever',
     glyph: '🎬',
     complexity: 4,
-    target: 'Show Process, reset Score, then chase 3+ different-spot targets forever.',
+    target: 'Show Turtu, reset Score, then chase 3+ different-spot targets forever.',
     narrator: "Lights up, scoreboard at zero, and then... the chase never stops.",
     steps: const ["Add 'show' then 'set Score to 0'.", 'Follow with a forever loop of 3+ different-spot catches.'],
     starter: () => [
@@ -1024,7 +1024,7 @@ final cqComboChaserLessons = <Lesson>[
     title: 'The Endless Chase',
     glyph: '🌌',
     complexity: 4,
-    target: 'Reset Score, show Process, then chase 4+ different-spot targets forever with sound.',
+    target: 'Reset Score, show Turtu, then chase 4+ different-spot targets forever with sound.',
     narrator: "This is the endless chase in full: reset, show, and an ever-running loop of catches.",
     steps: const ["Add 'set Score to 0' then 'show'.", 'Follow with a forever loop of 4+ different-spot catches, all with sound.'],
     starter: () => [

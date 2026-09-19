@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Deploy credentials — never commit these
+/android/play-deploy-key.json
+/ios/fastlane-appstore-connect-key.p8
+/fastlane/report.xml
+.env
+deploy.local.env

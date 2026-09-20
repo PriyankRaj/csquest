@@ -122,7 +122,7 @@ deploy_android() {
     exit 1
   fi
   log "[Android] Building App Bundle and uploading to Google Play..."
-  fastlane android deploy "${FASTLANE_ARGS[@]}"
+  fastlane android deploy "${FASTLANE_ARGS[@]+"${FASTLANE_ARGS[@]}"}"
   log "[Android] Upload complete."
 }
 

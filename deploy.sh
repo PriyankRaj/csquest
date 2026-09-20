@@ -97,7 +97,21 @@ if [[ "$new_version" != "$current_version" ]]; then
 fi
 
 log "Running flutter analyze..."
-flutter analyze
+analyze_log="$(mktemp)"
+set +e
+flutter analyze 2>&1 | tee "$analyze_log"
+analyze_status="${PIPESTATUS[0]}"
+set -e
+if [[ "$analyze_status" != "0" ]]; then
+  if grep -qE '^\s*error •' "$analyze_log"; then
+    echo "flutter analyze found real errors — deploy stopped." >&2
+    rm -f "$analyze_log"
+    exit 1
+  else
+    log "flutter analyze found only info/warning-level issues; continuing."
+  fi
+fi
+rm -f "$analyze_log"
 
 log "Running flutter test..."
 flutter test

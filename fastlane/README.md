@@ -25,19 +25,6 @@ Build the release App Bundle and upload it to the Play Store
 
 ----
 
-
-## iOS
-
-### ios deploy
-
-```sh
-[bundle exec] fastlane ios deploy
-```
-
-Build the release IPA and upload it to App Store Connect
-
-----
-
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
 More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).

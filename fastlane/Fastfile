@@ -22,14 +22,7 @@ platform :android do
   end
 end
 
-platform :ios do
-  desc "Build the release IPA and upload it to App Store Connect"
-  lane :deploy do
-    Dir.chdir(ROOT) do
-      sh(
-        "flutter", "build", "ipa",
-        "--export-options-plist=ios/ExportOptions/ExportOptions.plist"
-      )
-    end
-  end
-end
+# iOS is deployed directly by deploy.sh (not through a fastlane lane): it needs no
+# credentials beyond the Xcode-signed-in Apple ID, and `flutter build ipa` has a known
+# harmless failure mode after a successful upload that's easier to handle in bash than
+# by parsing fastlane's `sh` exception output.

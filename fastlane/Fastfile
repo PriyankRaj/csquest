@@ -22,7 +22,28 @@ platform :android do
   end
 end
 
-# iOS is deployed directly by deploy.sh (not through a fastlane lane): it needs no
-# credentials beyond the Xcode-signed-in Apple ID, and `flutter build ipa` has a known
-# harmless failure mode after a successful upload that's easier to handle in bash than
-# by parsing fastlane's `sh` exception output.
+platform :ios do
+  desc "Upload an already-built IPA to App Store Connect and submit it for review"
+  lane :deploy do |options|
+    api_key = app_store_connect_api_key(
+      key_id: ENV.fetch("APP_STORE_CONNECT_KEY_ID"),
+      issuer_id: ENV.fetch("APP_STORE_CONNECT_ISSUER_ID"),
+      key_filepath: File.expand_path("~/.appstoreconnect/private_keys/AuthKey_#{ENV.fetch('APP_STORE_CONNECT_KEY_ID')}.p8")
+    )
+
+    # "Deploy" means get it in front of Apple for review — it does NOT mean auto-publish the
+    # moment Apple approves it (automatic_release: false). Going live is a separate, deliberate
+    # manual step in App Store Connect after approval.
+    upload_to_app_store(
+      api_key: api_key,
+      ipa: options[:ipa_path],
+      app_version: options[:app_version],
+      force: true,
+      skip_screenshots: true,
+      submit_for_review: true,
+      automatic_release: false,
+      release_notes: { "en-US" => options[:release_notes] || "Bug fixes and improvements." },
+      submission_information: { export_compliance_uses_encryption: false }
+    )
+  end
+end

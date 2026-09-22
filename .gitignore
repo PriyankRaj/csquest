@@ -49,4 +49,8 @@ app.*.map.json
 /ios/fastlane-appstore-connect-key.p8
 /fastlane/report.xml
 .env
+
+# Local deploy history (used by the deploy dashboard) — machine-local state
+.deploy-history.json
+.last-failure.json
 deploy.local.env

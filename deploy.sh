@@ -18,9 +18,11 @@
 #      (service account: android/play-deploy-key.json). Defaults to the production track,
 #      submitted for review immediately (this is a real publish — Google still runs its own
 #      review before it goes live). Not a draft: use --validate-only to test without publishing.
-#   4. iOS: `flutter build ipa` + xcodebuild uploads straight to App Store Connect (uses the
-#      Xcode-signed-in Apple ID on this Mac — same as building from Xcode). You still add
-#      release notes and submit for review yourself in App Store Connect.
+#   4. iOS: `flutter build ipa` exports locally, then fastlane (App Store Connect API key)
+#      uploads the .ipa, sets release notes, and submits it for App Store review. This is
+#      "submit for review" only — automatic_release is off, so it will NOT go live on its own
+#      once Apple approves it; that final release is still a deliberate manual step in App
+#      Store Connect.
 #   5. If the version changed, commits and pushes that change to git.
 #
 # The script only prints "Deploy complete" after every requested platform's upload has
@@ -35,16 +37,42 @@ log() {
   echo "[$(date '+%H:%M:%S')] $*"
 }
 
+record_deploy() {
+  local target="$1" version="$2"
+  local history_file="$ROOT/.deploy-history.json"
+  local commit entry
+  commit="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  entry="$(jq -n --arg ts "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg target "$target" \
+    --arg version "$version" --arg commit "$commit" \
+    '{timestamp:$ts, target:$target, version:$version, commit:$commit}')"
+  if [[ -f "$history_file" ]]; then
+    jq --argjson entry "$entry" '. + [$entry]' "$history_file" > "$history_file.tmp" && mv "$history_file.tmp" "$history_file"
+  else
+    jq -n --argjson entry "$entry" '[$entry]' > "$history_file"
+  fi
+}
+
 TARGET="both"
 PROMPT=1
 AUTO_YES=0
+BUMP_TYPE="build"
 FASTLANE_ARGS=()
+
+# App Store Connect API key ("deploy-automation", App Manager role) — shared across all four
+# apps on this account. Used for an explicit `altool --upload-app` upload after the local
+# export, instead of relying on xcodebuild's `destination: upload`, which has been observed to
+# silently skip the actual upload (falls back to printing manual-upload instructions) without
+# failing the build. The private key itself lives at
+# ~/.appstoreconnect/private_keys/AuthKey_<key id>.p8 (altool finds it there automatically).
+APP_STORE_CONNECT_KEY_ID="9PZA66NX9Q"
+APP_STORE_CONNECT_ISSUER_ID="6dc856b0-c8b9-4763-9f74-65180d9e678b"
 
 for arg in "$@"; do
   case "$arg" in
     android|ios|both) TARGET="$arg" ;;
     --no-bump) PROMPT=0 ;;
     --yes|-y) AUTO_YES=1 ;;
+    --bump=*) BUMP_TYPE="${arg#--bump=}" ;;
     --track=*) FASTLANE_ARGS+=("track:${arg#--track=}") ;;
     --validate-only) FASTLANE_ARGS+=("validate_only:true") ;;
     --release-status=*) FASTLANE_ARGS+=("release_status:${arg#--release-status=}") ;;
@@ -55,13 +83,33 @@ for arg in "$@"; do
   esac
 done
 
+case "$BUMP_TYPE" in
+  major|minor|patch|build) ;;
+  *)
+    echo "Unknown --bump value: $BUMP_TYPE (expected major, minor, patch, or build)" >&2
+    exit 1
+    ;;
+esac
+
 log "Deploy target: $TARGET"
 
 current_version="$(grep '^version:' pubspec.yaml | sed 's/version: //')"
 version_name="${current_version%+*}"
 build_number="${current_version##*+}"
 next_build=$((build_number + 1))
-bumped_version="${version_name}+${next_build}"
+
+IFS='.' read -r ver_major ver_minor ver_patch <<< "$version_name"
+build_bump="${version_name}+${next_build}"
+patch_bump="${ver_major}.${ver_minor}.$((ver_patch + 1))+${next_build}"
+minor_bump="${ver_major}.$((ver_minor + 1)).0+${next_build}"
+major_bump="$((ver_major + 1)).0.0+${next_build}"
+
+case "$BUMP_TYPE" in
+  major) bumped_version="$major_bump" ;;
+  minor) bumped_version="$minor_bump" ;;
+  patch) bumped_version="$patch_bump" ;;
+  build) bumped_version="$build_bump" ;;
+esac
 
 new_version="$current_version"
 
@@ -69,18 +117,33 @@ if [[ "$PROMPT" == "0" ]]; then
   log "Deploying current version as-is: $current_version (--no-bump)"
 elif [[ "$AUTO_YES" == "1" ]]; then
   new_version="$bumped_version"
-  log "Bumping build number: $current_version -> $new_version (--yes)"
+  log "Bumping $BUMP_TYPE version: $current_version -> $new_version (--yes)"
 else
   echo ""
   echo "Current version: $current_version"
-  echo "  [Enter]  Bump to $bumped_version and deploy"
+  echo "  [Enter]  Bump build number -> $build_bump and deploy"
+  echo "  p        Bump patch       -> $patch_bump and deploy"
+  echo "  m        Bump minor       -> $minor_bump and deploy"
+  echo "  M        Bump major       -> $major_bump and deploy"
   echo "  r        Retry $current_version as-is (no bump)"
   echo "  c        Cancel"
   read -r -p "> " choice
   case "$choice" in
     ""|y|Y|b|B)
-      new_version="$bumped_version"
+      new_version="$build_bump"
       log "Bumping build number: $current_version -> $new_version"
+      ;;
+    p)
+      new_version="$patch_bump"
+      log "Bumping patch version: $current_version -> $new_version"
+      ;;
+    m)
+      new_version="$minor_bump"
+      log "Bumping minor version: $current_version -> $new_version"
+      ;;
+    M)
+      new_version="$major_bump"
+      log "Bumping major version: $current_version -> $new_version"
       ;;
     r|R)
       log "Retrying current version as-is: $current_version"
@@ -124,6 +187,7 @@ deploy_android() {
   log "[Android] Building App Bundle and uploading to Google Play..."
   fastlane android deploy "${FASTLANE_ARGS[@]+"${FASTLANE_ARGS[@]}"}"
   log "[Android] Upload complete."
+  record_deploy "android" "$new_version"
 }
 
 deploy_ios() {
@@ -131,23 +195,38 @@ deploy_ios() {
     echo "Missing ios/ExportOptions/ExportOptions.plist — iOS deploy skipped." >&2
     exit 1
   fi
-  log "[iOS] Building archive and uploading to App Store Connect..."
+  log "[iOS] Building and exporting archive..."
   local log_file
   log_file="$(mktemp)"
   set +e
   flutter build ipa --export-options-plist=ios/ExportOptions/ExportOptions.plist 2>&1 | tee "$log_file"
   local build_status="${PIPESTATUS[0]}"
   set -e
-  if [[ "$build_status" == "0" ]]; then
-    log "[iOS] Upload complete."
-  elif grep -q "Xcode archive done" "$log_file" && grep -q "Flutter failed to list directory" "$log_file"; then
-    log "[iOS] Archive and upload succeeded; ignoring Flutter's known harmless local .ipa directory-listing error."
-  else
-    echo "[iOS] Deploy failed — see log above." >&2
-    rm -f "$log_file"
-    exit 1
+  if [[ "$build_status" != "0" ]]; then
+    if grep -q "Xcode archive done" "$log_file" && grep -q "Flutter failed to list directory" "$log_file"; then
+      log "[iOS] Archive/export succeeded; ignoring Flutter's known harmless local .ipa directory-listing error."
+    else
+      echo "[iOS] Build failed — see log above." >&2
+      rm -f "$log_file"
+      exit 1
+    fi
   fi
   rm -f "$log_file"
+
+  local ipa_path
+  ipa_path="$(find build/ios/ipa -maxdepth 1 -iname '*.ipa' | head -1)"
+  if [[ -z "$ipa_path" ]]; then
+    echo "[iOS] No .ipa found in build/ios/ipa after build — nothing to upload." >&2
+    exit 1
+  fi
+
+  log "[iOS] Uploading $(basename "$ipa_path") and submitting for App Store review..."
+  local new_version_name="${new_version%+*}"
+  APP_STORE_CONNECT_KEY_ID="$APP_STORE_CONNECT_KEY_ID" \
+  APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_ISSUER_ID" \
+    fastlane ios deploy "ipa_path:$ipa_path" "app_version:$new_version_name"
+  log "[iOS] Submitted for App Store review."
+  record_deploy "ios" "$new_version"
 }
 
 case "$TARGET" in

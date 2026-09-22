@@ -7,7 +7,7 @@
     <key>teamID</key>
     <string>W8748D6SH4</string>
     <key>destination</key>
-    <string>upload</string>
+    <string>export</string>
     <key>signingStyle</key>
     <string>automatic</string>
 </dict>

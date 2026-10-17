@@ -1,0 +1,24 @@
+CS Quest is a coding game: snap colorful code blocks together to make a character move, draw, talk, and play — then use what you've learned to build real games. No ads, no logins, no data collected.
+
+CODE QUEST — LEARN TO CODE BY MAKING GAMES
+600 hands-on lessons across 10 topics, each one a step toward something you build:
+- Bring a Character to Life — steps, turns, and facing the right way
+- Build a Teleporter — exact x/y positions
+- Draw With Loops — repeat blocks that draw shapes
+- Animate & Add Sound — say, show/hide, and sound blocks
+- Wire Up Game Controls — make your world react
+- Build a Scoreboard — variables that keep score
+- Make Smart Decisions — if-blocks and sensing
+- Build a Racing Game, a Catching Game, and an Interactive Story — put it all together
+
+Pick your own character from 12 options — turtle, cat, fox, robot, alien and more — and it stays yours across every lesson.
+
+READY FOR MORE? PROCESS QUEST
+Go beyond coding with 12 computer science subjects, 60 bite-sized lessons each: Operating Systems, Data Structures, Digital Logic, Computer Networks, Databases, Artificial Intelligence, Machine Learning, Web Technologies, Software Engineering, Cloud & Distributed Systems, Compilers, and Cybersecurity. Every lesson pairs a short explanation with a puzzle — multiple choice, drag-to-order, sorting, matching, or wiring up a logic circuit — narrated by Process the turtle.
+
+BUILT FOR FOCUSED LEARNING
+- 1,300+ lessons across both quests
+- Long-press-and-drag block editing, built for touch
+- Light, Dark, or System appearance
+- Progress saved right on your device
+- No ads. No accounts. No tracking.

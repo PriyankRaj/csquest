@@ -20,7 +20,7 @@ class QuestApp extends StatelessWidget {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: ThemeController.mode,
       builder: (context, mode, _) => MaterialApp(
-        title: 'Computer Science Quest',
+        title: 'CS Quest',
         debugShowCheckedModeBanner: false,
         themeMode: mode,
         theme: buildQuestTheme(Brightness.light),

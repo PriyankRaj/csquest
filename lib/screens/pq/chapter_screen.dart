@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../models/pq_models.dart';
+import '../../progress/review_prompter.dart';
 import '../../theme.dart';
 import '../../widgets/home_action.dart';
 import '../../widgets/puzzle/circuit_puzzle.dart';
@@ -29,6 +31,7 @@ class _ChapterScreenState extends State<ChapterScreen> {
     if (_solved) return;
     setState(() => _solved = true);
     await progressStore.markDone('pq:${widget.subject.id}:${widget.chapter.id}');
+    unawaited(ReviewPrompter.recordWin());
   }
 
   @override

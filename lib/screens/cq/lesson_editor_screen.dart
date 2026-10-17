@@ -6,6 +6,7 @@ import '../../data/cq_all_lessons.dart';
 import '../../data/cq_blocks.dart';
 import '../../main.dart';
 import '../../models/cq_models.dart';
+import '../../progress/review_prompter.dart';
 import '../../theme.dart';
 import '../../widgets/home_action.dart';
 import '../../widgets/quest_switcher_action.dart';
@@ -371,6 +372,7 @@ class _LessonEditorScreenState extends State<LessonEditorScreen> {
     }
 
     await progressStore.markDone('cq:${widget.lesson.id}');
+    unawaited(ReviewPrompter.recordWin());
     if (!mounted) return;
     final next = _nextLesson;
     await showDialog(
